@@ -10,22 +10,37 @@
            <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"
    integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og=="
    crossorigin=""></script>
+           <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
 
     </head>
     <body>
          <div id="map" style="height:600px;"></div>
          <script>
-var map = L.map('map', {
-    crs: L.CRS.Simple,
-            minZoom: -5
-});
+        var map = L.map('map').setView([51.505, -0.09], 13);
+		var Stamen_Watercolor = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.{ext}', {
+			attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+			subdomains: 'abcd',
+			minZoom: 1,
+			maxZoom: 16,
+			ext: 'jpg'
+		}).addTo(map);
 
-var bounds = [[0,0], [1000,1000]];
-var image = L.imageOverlay('https://upload.wikimedia.org/wikipedia/commons/e/ec/London_actually_surveyed_by_Wm_Morgan_1682.jpg', bounds).addTo(map);
 
-map.fitBounds(bounds);
+        var client = mqtt.connect('http://127.0.0.1:9001')
+
+        client.subscribe("track/latlong")
+
+        var marker = L.marker([51.5, -0.09]).addTo(map);
 
 
-        </script>
+        client.on("message", function (topic, payload) {
+            var [lat, lng] = payload.toString().split(',');
+            console.log(lat, lng);
+            marker.setLatLng(new L.LatLng(lat, lng));
+        })
+
+    </script>
+
     </body>
 </html>
+
