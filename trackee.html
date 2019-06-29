@@ -1,25 +1,26 @@
- <!DOCTYPE html>
- <html>
-       <head>
-        <meta charset="UTF-8">
-        <title>title</title>
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>still to be named - trackee</title>
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+    <script src="./NoSleep.min.js"></script>
 
-           <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
-           <script src="./NoSleep.min.js"></script>
-
-    </head>
-    <body>
+</head>
+<body>
     <button onclick="activateTracking()">start tracking</button>
-    <button onclick="dontSleep()">no sleep</button>
+    <button onclick="dontSleep()" id="sleep">no sleep</button>
 	<script>
-	var client = mqtt.connect('http://127.0.0.1:9001')
+    var client = mqtt.connect('wss://iot.eclipse.org:443/ws')
 
 
     function activateTracking() {
-        setInterval(() => {
-            navigator.geolocation.getCurrentPosition(gotPosition);
-        }, 10000)
+        var watchID = navigator.geolocation.watchPosition(function(position) { gotPosition(position); }, error);
     }
+
+    function error(error) {
+        console.log(error.code + ' ' + error.message);
+    };
 
 
     function gotPosition(position) {
@@ -27,10 +28,14 @@
             console.log(position);
     }
 
+    var noSleep = new NoSleep();
+
     function dontSleep() {
-        var noSleep = new NoSleep();
         noSleep.enable();
+        document.getElementById('sleep').class = 'active';
     }
+
+
     </script>
     </body>
 </html>
