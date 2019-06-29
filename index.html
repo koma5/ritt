@@ -25,7 +25,9 @@
     <div id="map"></div>
 
     <script>
-    var map = L.map('map').setView([51.505, -0.09], 13);
+    var initPosition = [51.528858, -0.220988];
+
+    var map = L.map('map').setView(initPosition, 16);
 	var Stamen_Watercolor = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.{ext}', {
 		attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
 		subdomains: 'abcd',
@@ -39,13 +41,24 @@
 
     client.subscribe("track/latlong")
 
-    var marker = L.marker([51.5, -0.09]).addTo(map);
+    var cyclistIcon = L.icon({
+        iconUrl: 'bicyclist_1f6b4.png',
+        iconSize: [35, 35],
+        iconAnchor: [8, 34],
+        shadowUrl: 'bicyclist_1f6b4_shadow.png',
+        shadowSize: [35, 35],
+        shadowAnchor: [8, 34]
+    })
+
+    var marker = L.marker(initPosition, {icon: cyclistIcon}
+    ).addTo(map);
 
 
     client.on("message", function (topic, payload) {
         var [lat, lng] = payload.toString().split(',');
         console.log(lat, lng);
         marker.setLatLng(new L.LatLng(lat, lng));
+        map.setView([lat, lng]);
     })
 
     </script>
