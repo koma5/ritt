@@ -6,16 +6,52 @@
     <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
     <script src="./NoSleep.min.js"></script>
 
+    <style>
+
+        button {
+            background-color: lightblue;
+            padding: 20px;
+            border:none;
+            width: 150px;
+
+        }
+        .active {
+            background-color: #a951fb;
+        }
+    </style>
+
 </head>
 <body>
-    <button onclick="activateTracking()">start tracking</button>
-    <button onclick="dontSleep()" id="sleep">no sleep</button>
+    <p id="publishedLocationCount">0</p>
+    <button onclick="toggleTracking()" id="tracking">tracking</button>
+    <button onclick="toggleSleep()" id="sleep">prevent sleep</button>
+
 	<script>
+
+    var topic = 'track/latlong';
+    var publishedLocationCount = 0;
+
     var client = mqtt.connect('wss://iot.eclipse.org:443/ws')
 
+    var watchID = null;
 
-    function activateTracking() {
-        var watchID = navigator.geolocation.watchPosition(function(position) { gotPosition(position); }, error);
+    function toggleTracking() {
+
+        options = {
+            enableHighAccuracy: false,
+            timeout: 5000,
+            maximumAge: 0
+        };
+
+        if (watchID == null) {
+            watchID = navigator.geolocation.watchPosition(function(position) { gotPosition(position); }, error, options);
+        }
+        else {
+            navigator.geolocation.clearWatch(watchID);
+            watchID = null;
+        }
+
+        document.getElementById('tracking').classList.toggle('active');
     }
 
     function error(error) {
@@ -24,15 +60,29 @@
 
 
     function gotPosition(position) {
-        client.publish("track/latlong", position.coords.latitude + ','  + position.coords.longitude)
-            console.log(position);
+
+        publishedLocationCount++;
+        document.getElementById('publishedLocationCount').innerHTML = publishedLocationCount;
+
+        client.publish(topic, position.coords.latitude + ','  + position.coords.longitude)
+
+        console.log(position);
     }
 
-    var noSleep = new NoSleep();
+    var noSleep = null;
 
-    function dontSleep() {
-        noSleep.enable();
-        document.getElementById('sleep').class = 'active';
+    function toggleSleep() {
+
+        if (noSleep == null) {
+            noSleep = new NoSleep();
+            noSleep.enable();
+        }
+        else {
+            noSleep.disable();
+            noSleep = null;
+        }
+
+        document.getElementById('sleep').classList.toggle('active');
     }
 
 
