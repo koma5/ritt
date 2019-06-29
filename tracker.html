@@ -9,8 +9,8 @@
     </head>
     <body>
     <h4>messages to topic track/latlong</h4>
-    <ul id="messages">
-    </ul>
+    <ol id="messages">
+    </ol>
 	<script>
 	var client = mqtt.connect('http://127.0.0.1:9001')
 
@@ -18,7 +18,7 @@
 
 	client.on("message", function (topic, payload) {
         var li = document.createElement('LI')
-        li.appendChild(document.createTextNode(payload));
+        li.appendChild(document.createTextNode(new Date().toISOString() + ' ' + payload));
         document.getElementById('messages').appendChild(li);
 	})
 

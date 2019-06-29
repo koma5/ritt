@@ -1,0 +1,36 @@
+ <!DOCTYPE html>
+ <html>
+       <head>
+        <meta charset="UTF-8">
+        <title>title</title>
+
+           <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+           <script src="./NoSleep.min.js"></script>
+
+    </head>
+    <body>
+    <button onclick="activateTracking()">start tracking</button>
+    <button onclick="dontSleep()">no sleep</button>
+	<script>
+	var client = mqtt.connect('http://127.0.0.1:9001')
+
+
+    function activateTracking() {
+        setInterval(() => {
+            navigator.geolocation.getCurrentPosition(gotPosition);
+        }, 10000)
+    }
+
+
+    function gotPosition(position) {
+        client.publish("track/latlong", position.coords.latitude + ','  + position.coords.longitude)
+            console.log(position);
+    }
+
+    function dontSleep() {
+        var noSleep = new NoSleep();
+        noSleep.enable();
+    }
+    </script>
+    </body>
+</html>
