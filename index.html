@@ -9,11 +9,17 @@
 
     <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
 
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <style>
         body {
             padding: 0;
             margin: 0;
+            font-family: sans-serif;
+            color: white;
+            font-weight: bold;
         }
+
         html, body, #map{
             height: 100%;
             width: 100%;
@@ -26,36 +32,50 @@
 
         #sidebar {
             background-color: #8b6c74;
-            width: 150px;
+            width: 300px;
             height:100%;
             transition: width 0.3s ease-in-out;
+            box-shadow: inset -56px 0px 52px -59px rgba(0,0,0,0.75);
+            padding: 5 0 0 5px;
         }
 
         #burger {
             position: relative;
             top: 80px;
-            background-color: white;
+            background-color: #fff;
             left: 10px;
             z-index: 10000;
-            width: 30px;
-            height: 30px;
+            width: 34px;
+            height: 34px;
             padding: 0;
-
+            border-radius: 4px;
+            border:none;
+            line-height:22px;
+            font-size:1.9em;
+            border: 2px solid rgba(0,0,0,.3);
         }
+
+
     </style>
 
 </head>
 <body>
     <section id="sidebar">
-        <button onclick="toggleFollow()">follow</button>
+        <label for="follow">follow</label>
+        <input id="follow" checked type="checkbox" value="follow" onclick="toggleFollow()" >
+        <p>positions: <span id="positionCount"></span><br>
+        last update: <span id="relativeTimestamp"></span</p>
     </section>
     <section id="map">
-        <button id="burger" onclick="toggleSidebar()">^</button>
+        <button id="burger" onclick="toggleSidebar()"><</button>
     </section>
 
     <script>
     var initPosition = [51.528858, -0.220988];
     var follow = true;
+
+    var positionCount = 0;
+    var lastPositionTimestamp = null;
 
     var map = L.map('map').setView(initPosition, 16);
 	var Stamen_Watercolor = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.{ext}', {
@@ -88,6 +108,9 @@
         var [lat, lng] = payload.toString().split(',');
         console.log(lat, lng);
         marker.setLatLng(new L.LatLng(lat, lng));
+
+        lastPositionTimestamp = new Date();
+        positionCount++;
         if(follow) { map.setView([lat, lng]);};
     })
 
@@ -105,6 +128,18 @@
         }
         map.invalidateSize(); //this does not work with transitio
     }
+
+    setInterval(function() {
+        timeDelta = parseInt((new Date().getTime() - lastPositionTimestamp.getTime()) / 1000);
+        if (timeDelta < 60)
+            deltaString = parseInt(timeDelta) + 's ago'
+        else {
+            timeDelta / 60;
+            deltaString = parseInt(timeDelta / 60) + 'm ago';
+        }
+        document.getElementById('relativeTimestamp').innerHTML = deltaString;
+        document.getElementById('positionCount').innerHTML = positionCount;
+    }, 1000);
 
     </script>
 
