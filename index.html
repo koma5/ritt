@@ -14,18 +14,48 @@
             padding: 0;
             margin: 0;
         }
-        html, body, #map {
+        html, body, #map{
             height: 100%;
             width: 100%;
+            display: flex;
+        }
+
+        #map {
+            flex-direction:columns;
+        }
+
+        #sidebar {
+            background-color: #8b6c74;
+            width: 150px;
+            height:100%;
+            transition: width 0.3s ease-in-out;
+        }
+
+        #burger {
+            position: relative;
+            top: 80px;
+            background-color: white;
+            left: 10px;
+            z-index: 10000;
+            width: 30px;
+            height: 30px;
+            padding: 0;
+
         }
     </style>
 
 </head>
 <body>
-    <div id="map"></div>
+    <section id="sidebar">
+        <button onclick="toggleFollow()">follow</button>
+    </section>
+    <section id="map">
+        <button id="burger" onclick="toggleSidebar()">^</button>
+    </section>
 
     <script>
     var initPosition = [51.528858, -0.220988];
+    var follow = true;
 
     var map = L.map('map').setView(initPosition, 16);
 	var Stamen_Watercolor = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.{ext}', {
@@ -58,8 +88,23 @@
         var [lat, lng] = payload.toString().split(',');
         console.log(lat, lng);
         marker.setLatLng(new L.LatLng(lat, lng));
-        map.setView([lat, lng]);
+        if(follow) { map.setView([lat, lng]);};
     })
+
+    function toggleFollow() {
+        follow = !follow;
+    }
+
+    function toggleSidebar() {
+        element = document.getElementById('sidebar');
+        if (element.style.length == 0) {
+            element.style = "width:0";
+        }
+        else {
+            element.style = '';
+        }
+        map.invalidateSize(); //this does not work with transitio
+    }
 
     </script>
 
