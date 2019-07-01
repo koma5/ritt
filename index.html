@@ -32,11 +32,16 @@
 
         #sidebar {
             background-color: #8b6c74;
-            width: 300px;
+            width: 400px;
             height:100%;
             transition: width 0.3s ease-in-out;
             box-shadow: inset -56px 0px 52px -59px rgba(0,0,0,0.75);
             padding: 5 0 0 5px;
+            overflow: visible;
+        }
+
+        #sidebar li{
+            list-style-type: none;
         }
 
         #burger {
@@ -60,11 +65,15 @@
 
 </head>
 <body>
-    <section id="sidebar">
-        <label for="follow">follow</label>
-        <input id="follow" checked type="checkbox" value="follow" onclick="toggleFollow()" >
-        <p>positions: <span id="positionCount"></span><br>
-        last update: <span id="relativeTimestamp"></span</p>
+    <section id="sidebar" style="display:none">
+        <ul>
+        <li>
+            <label for="follow">follow</label>
+            <input id="follow" checked type="checkbox" value="follow" onclick="toggleFollow()" >
+        </li>
+        <li>positions: <span id="positionCount"></span></li>
+        <li>last update: <span id="relativeTimestamp"></span</li>
+        <ul>
     </section>
     <section id="map">
         <button id="burger" onclick="toggleSidebar()"><</button>
