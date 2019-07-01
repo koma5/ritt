@@ -89,7 +89,7 @@
 
     var client = mqtt.connect('wss://iot.eclipse.org:443/ws')
 
-    client.subscribe("track/latlong")
+    client.subscribe("t.blahhhhh.ga/latlong")
 
     var cyclistIcon = L.icon({
         iconUrl: 'bicyclist_1f6b4.png',
@@ -103,11 +103,26 @@
     var marker = L.marker(initPosition, {icon: cyclistIcon}
     ).addTo(map);
 
+	var trackLine = new L.Polyline([], {
+		color: '#4287f5',
+		weight: 3,
+		opacity: 0.5,
+		smoothFactor: 2
+	 });
+
+	map.addLayer(trackLine);
 
     client.on("message", function (topic, payload) {
         var [lat, lng] = payload.toString().split(',');
         console.log(lat, lng);
         marker.setLatLng(new L.LatLng(lat, lng));
+
+		if (positionCount > 500)
+		{
+			trackLine._latlngs.shift();
+		}
+
+		trackLine.addLatLng([lat, lng]);
 
         lastPositionTimestamp = new Date();
         positionCount++;

@@ -28,7 +28,7 @@
 
 	<script>
 
-    var topic = 'track/latlong';
+    var topic = 't.blahhhhh.ga/latlong';
     var publishedLocationCount = 0;
     var lastPublishedPosition = '';
 
@@ -39,7 +39,7 @@
     function toggleTracking() {
 
         options = {
-            enableHighAccuracy: false,
+            enableHighAccuracy: true,
             timeout: 5000,
             maximumAge: 0
         };
@@ -70,7 +70,7 @@
 
             document.getElementById('publishedLocationCount').innerHTML = publishedLocationCount;
 
-            client.publish(topic, position, {retain: true})
+            client.publish(topic, position, {retain: false})
 
             console.log(position);
         }
