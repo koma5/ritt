@@ -24,13 +24,17 @@
 
 </head>
 <body>
-    <p id="publishedLocationCount">0</p>
+    <p><span id="publishedLocationCount">0</span> <span id="frontEndLink"></span></p>
     <button onclick="toggleTracking()" id="tracking">tracking</button>
     <button onclick="toggleSleep()" id="sleep">prevent sleep</button>
 
 	<script>
 
-    var topic = 't.blahhhhh.ga/latlong';
+    const urlParams = new URLSearchParams(window.location.search);
+    var shortTopic = urlParams.get('trackee') ;
+    topic = shortTopic !== null ? 'ch/5th/ritt/' + shortTopic : 'ch/5th/ritt/default';
+    var fronEndLink = shortTopic == null ? location.origin : location.origin + '?trackee=' + shortTopic;
+
     var publishedLocationCount = 0;
     var lastPublishedPosition = '';
 
@@ -55,6 +59,7 @@
         }
 
         document.getElementById('tracking').classList.toggle('active');
+        document.getElementById('frontEndLink').innerText = fronEndLink;
     }
 
     function error(error) {

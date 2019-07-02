@@ -68,7 +68,7 @@
     <section id="sidebar" style="display:none">
         <ul>
         <li>
-            <label for="follow">follow</label>
+            <label for="follow">follow:</label>
             <input id="follow" checked type="checkbox" value="follow" onclick="toggleFollow()" >
         </li>
         <li>positions: <span id="positionCount"></span></li>
@@ -80,6 +80,13 @@
     </section>
 
     <script>
+
+    const urlParams = new URLSearchParams(window.location.search);
+    var topic = urlParams.get('trackee');
+    topic = topic !== null ? 'ch/5th/ritt/' + topic : 'ch/5th/ritt/default';
+
+    console.log(topic)
+
     var initPosition = [51.528858, -0.220988];
     var follow = true;
 
@@ -97,8 +104,7 @@
 
 
     var client = mqtt.connect('wss://iot.eclipse.org:443/ws')
-
-    client.subscribe("t.blahhhhh.ga/latlong")
+    client.subscribe(topic)
 
     var cyclistIcon = L.icon({
         iconUrl: 'bicyclist_1f6b4.png',
@@ -154,6 +160,8 @@
     }
 
     setInterval(function() {
+        if (lastPositionTimestamp == null) return null;
+
         timeDelta = parseInt((new Date().getTime() - lastPositionTimestamp.getTime()) / 1000);
         if (timeDelta < 60)
             deltaString = parseInt(timeDelta) + 's ago'
