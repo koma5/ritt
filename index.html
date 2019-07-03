@@ -103,9 +103,12 @@
 	}).addTo(map);
 
 
+    // connect to mqtt broker
     var client = mqtt.connect('wss://iot.eclipse.org:443/ws')
     client.subscribe(topic)
 
+
+    // add cyclist marker
     var cyclistIcon = L.icon({
         iconUrl: 'bicyclist_1f6b4.png',
         iconSize: [35, 35],
@@ -118,6 +121,8 @@
     var marker = L.marker(initPosition, {icon: cyclistIcon}
     ).addTo(map);
 
+
+    // add empty current track reveived via mqtt
 	var trackLine = new L.Polyline([], {
 		color: '#4287f5',
 		weight: 3,
@@ -127,6 +132,36 @@
 
 	map.addLayer(trackLine);
 
+
+    // load previous line if URL provided
+    var previousLineRequest = new XMLHttpRequest();
+
+    previousLineRequest.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            var geoJsonLayer = L.geoJson(JSON.parse(this.responseText), {
+	            onEachFeature: function (feature, layer) {
+		            if (layer instanceof L.Polyline) {
+                            layer.setStyle({
+			                    color: 'green',
+                                opacity: 0.5
+                            })
+		                }
+		            }
+	            });
+        map.addLayer(geoJsonLayer);
+        }
+    }
+
+    var previousTrackUrl = urlParams.get('previoustrack');
+
+    if (previousTrackUrl !== null)
+    {
+        previousLineRequest.open("GET", previousTrackUrl, true);
+        previousLineRequest.send();
+    }
+
+
+    // add message callback and add new coordinates aswell as remove old
     client.on("message", function (topic, payload) {
         var [lat, lng] = payload.toString().split(',');
         console.log(lat, lng);
@@ -144,6 +179,8 @@
         if(follow) { map.setView([lat, lng]);};
     })
 
+
+    // UI functions
     function toggleFollow() {
         follow = !follow;
     }
