@@ -85,6 +85,8 @@
     var topic = urlParams.get('trackee');
     topic = topic !== null ? 'ch/5th/ritt/' + topic : 'ch/5th/ritt/default';
 
+    var markersAndLines = {};
+
     console.log(topic)
 
     var initPosition = [51.528858, -0.220988];
@@ -118,21 +120,6 @@
         shadowAnchor: [8, 34]
     })
 
-    var marker = L.marker(initPosition, {icon: cyclistIcon}
-    ).addTo(map);
-
-
-    // add empty current track reveived via mqtt
-	var trackLine = new L.Polyline([], {
-		color: '#4287f5',
-		weight: 3,
-		opacity: 0.5,
-		smoothFactor: 2
-	 });
-
-	map.addLayer(trackLine);
-
-
     // load previous line if URL provided
     var previousLineRequest = new XMLHttpRequest();
 
@@ -163,20 +150,40 @@
 
     // add message callback and add new coordinates aswell as remove old
     client.on("message", function (topic, payload) {
+
         var [lat, lng] = payload.toString().split(',');
-        console.log(lat, lng);
-        marker.setLatLng(new L.LatLng(lat, lng));
 
-		if (positionCount > 500)
+        if ( !markersAndLines[topic]) {
+            //new marker
+            markersAndLines[topic] = {
+                marker: L.marker(initPosition, {icon: cyclistIcon}),
+                line: new L.Polyline([], {
+		            color: '#4287f5',
+		            weight: 3,
+		            opacity: 0.5,
+		            smoothFactor: 2
+	                }),
+
+            }
+
+	        map.addLayer(markersAndLines[topic].line);
+            markersAndLines[topic].marker.addTo(map)
+        }
+
+        markersAndLines[topic].marker.setLatLng(new L.LatLng(lat, lng));
+        markersAndLines[topic].line.addLatLng([lat, lng]);
+
+
+        console.log(topic, lat, lng);
+
+		if (markersAndLines[topic].line._latlngs.length > 500)
 		{
-			trackLine._latlngs.shift();
+            markersAndLines[topic].line._latlngs.shift();
 		}
-
-		trackLine.addLatLng([lat, lng]);
 
         lastPositionTimestamp = new Date();
         positionCount++;
-        if(follow) { map.setView([lat, lng]);};
+        if(follow && Object.keys(markersAndLines).length == 1) { map.setView([lat, lng]);};
     })
 
 
