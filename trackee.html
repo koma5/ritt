@@ -42,6 +42,8 @@
 
     var watchID = null;
 
+    var lastPublishTimestamp = null;
+
     function toggleTracking() {
 
         options = {
@@ -69,8 +71,16 @@
 
     function gotPosition(position) {
         position = position.coords.latitude + ',' + position.coords.longitude;
+        if (lastPublishTimestamp != null) {
+            lastPublishTimeDelta = (new Date().getTime() - lastPublishTimestamp.getTime()) / 1000;
+        }
+        else {
+            lastPublishTimeDelta = null;
+        }
 
-        if (lastPublishedPosition !== position) {
+        if ( lastPublishTimeDelta == null ||
+            (lastPublishedPosition !== position && lastPublishTimeDelta > 3 ) )
+        {
 
             publishedLocationCount++;
             lastPublishedPosition = position;
@@ -80,6 +90,7 @@
             client.publish(topic, position, {retain: false})
 
             console.log(position);
+            lastPublishTimestamp = new Date();
         }
 
     }
