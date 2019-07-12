@@ -1,11 +1,14 @@
-var mqtt = require('mqtt')
-var client  = mqtt.connect('mqtt://iot.eclipse.org')
+const Influx = require('influxdb-nodejs');
+const client = new Influx('http://influx_knave:8086/telegraf');
 
-client.on('connect', function () {
-  client.subscribe('ch/5th/ritt/#', function (err) {
+client.query('mqtt_consumer')
+  .where('topic','ch/5th/ritt/default')
+  .then(function (r) {
+
+    r.results[0].series[0].values.forEach(function(row){
+        console.log(row[3]);
+    })
   })
-})
+  .catch(console.error);
 
-client.on('message', function (topic, message) {
-  console.log(topic, message.toString())
-})
+

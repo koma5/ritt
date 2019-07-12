@@ -1,7 +1,7 @@
 {
   "name": "knave",
   "version": "1.0.0",
-  "description": "recorder of GPS track received from mqtt stream",
+  "description": "output recorded long,lat as geojson.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -17,6 +17,6 @@
   },
   "homepage": "https://github.com/koma5/ritt#readme",
   "dependencies": {
-    "mqtt": "^3.0.0"
+    "influxdb-nodejs": "^3.1.0"
   }
 }
