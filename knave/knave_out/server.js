@@ -6,8 +6,10 @@ const client = new Influx('http://influx_knave:8086/telegraf');
 var app = express();
 
 app.get('/', function(req, res) {
-    getGeojson('ch/5th/ritt/default', function(geojson) {
+    trackee = typeof req.query.trackee == 'undefined' ? 'default' : req.query.trackee
+    getGeojson('ch/5th/ritt/' + trackee, function(geojson) {
         res.header("Content-Type", "application/geo+json");
+        res.header("Access-Control-Allow-Origin", "*");
         res.send(geojson);
     });
 });
@@ -31,10 +33,10 @@ function getGeojson(topic, callback) {
                     }
                 }]
             }
-
+            if (data.results[0].series)
             data.results[0].series[0].values.forEach(function(row){
-                point = row[3].split(',');
-                geo.features[0].geometry.coordinates.push(point)
+                point = row[3].split(',').map(parseFloat);
+                geo.features[0].geometry.coordinates.push([point[1], point[0]])
             })
             callback(geo);
         })

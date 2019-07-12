@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/koma5/ritt#readme",
   "dependencies": {
+    "express": "^4.17.1",
     "influxdb-nodejs": "^3.1.0"
   }
 }

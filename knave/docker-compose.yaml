@@ -7,8 +7,8 @@ services:
   influx_knave:
     image: influxdb
 
-  kanve_out:
+  knave_out:
     build: knave_out
-    expose:
-      - "8888"
+    ports:
+        - "4432:4432"
     restart: always
