@@ -1,0 +1,2 @@
+- [ ] pub key finger print in forntend and sign of messages; but what about a repeat attack?
+- [ ] storing of messages with knave bH5 / without bH5
