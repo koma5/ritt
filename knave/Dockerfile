@@ -1,7 +1,4 @@
-FROM node:latest
+FROM telegraf:latest
 
-COPY * /
+COPY telegraf.conf /etc/telegraf/telegraf.conf
 
-RUN npm install
-
-CMD node index.js

@@ -2,18 +2,13 @@ version: "3"
 services:
   knave_in:
     build: .
-    links:
-      - influx_knave
     restart: always
 
-  influx_kanve:
+  influx_knave:
     image: influxdb
-    network_mode: host
 
   kanve_out:
     build: knave_out
     expose:
       - "8888"
-    links:
-      - host
     restart: always
