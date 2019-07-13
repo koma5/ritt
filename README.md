@@ -3,6 +3,9 @@
 is a GPS tracker written completely in JavaScript. All the required components are static HTML pages with JavaScript. The tracker called trackee uses the location API of browsers and a shim called  [NoSleep.js][0] to prevent the browser from unloading/stopping the tracking while the phone is locked.
 
 Locations are being sent to the front end via a public mqtt broker.
+All trackees are actually mqtt topics prefixed with `ch/5th/ritt/` to prevent any collision with other applications using the public broker.
+
+All trackees are actualy mqtt topics prefixed with `ch/5th/ritt/` to prevent any colision with other applications using the publix broker.
 
 ## viewer index.html /
 There are a few query GET-parameters to change the behaviour of the frontend. It consists of a full page leaflet map and a sidebar which you can open with the additional button below the zoom buttons.
@@ -30,7 +33,7 @@ opOptionaluery parameters:
 
 The trackee app is hosted [here][2].
 
-# knave
+## knave
 This is a slapped together component to persist the GPS tracks, recording them into a influx database. It is distributing the recorded positions in form of a geojson file. There is no garaguaranteet this will stay online.
 
 Originally I planed to save the tracks to the [GPS track hosting app][4]. But there is no functionality to update unfinished tracks.
