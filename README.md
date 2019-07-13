@@ -13,7 +13,7 @@ If the viewer tracks/displays more than one trackee the follow mode is disabled.
 
 Optional query parameters:
  - `?trackee=joe` if omitted the viewer tracks the `default` trackee.
- - `?trackee=#`, `# == #` which is in mqtt terms a wildcard.
+ - `?trackee=%23`, `%23 == #` which is in mqtt terms a wildcard.
  - `?previoustrack=http://example.org/someGeoJsonFile.json`
 
 If no previous track url is provided the viewer tries to load a prpreviousrack over the knave component, which is optional and fails silently.
