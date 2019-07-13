@@ -5,7 +5,7 @@ is a GPS tracker written completely in JavaScript. All the required components a
 Locations are being sent to the front end via a public mqtt broker.
 
 ## viewer index.html /
-There are a few query GET-parameters to change the behavior of the fronted. It consists of a full page leaflet map and a sidebar which you can open with the additional button below the zoom buttons.
+There are a few query GET-parameters to change the behaviour of the frontend. It consists of a full page leaflet map and a sidebar which you can open with the additional button below the zoom buttons.
 
 The sidebar contains a checks follow with which you can decide to recenter the map on the marker if it moves and a two counters which tell the viewer when the last position / how many positions were received.
 
@@ -13,22 +13,38 @@ If the viewer tracks/displays more than one trackee the follow mode is disabled.
 
 Optional query parameters:
  - `?trackee=joe` if omitted the viewer tracks the `default` trackee.
- - `?trackee=#` 
+ - `?trackee=#`, `# == #` which is in mqtt terms a wildcard.
  - `?previoustrack=http://example.org/someGeoJsonFile.json`
 
-If no previous track is provided the viewer tries to load a prpreviousrack over the kanve component, which is oboptional
+If no previous track url is provided the viewer tries to load a prpreviousrack over the knave component, which is optional and fails silently.
+
+The frontend is hosted at [ritt.5th.ch][1], but feel free to host it yourself somewhere.
 
 ## trackee.html
 The UI contains two buttons to turn on and off the tracking and the preventing of phone sleep.
 
-After the tracking has started to UI display the link to the front end, the viewer with cocorrespondingrackee query parameter or without.
+After the tracking has started to UI display the link to the frontend, the viewer with cocorrespondingrackee query parameter or without.
 
 opOptionaluery parameters:
  - `trackee=joe` if omitted the trackee published on trackee `default`.
 
-# knave
-slapped together...
+The trackee app is hosted [here][2].
 
+# knave
+This is a slapped together component to persist the GPS tracks, recording them into a influx database. It is distributing the recorded positions in form of a geojson file. There is no garaguaranteet this will stay online.
+
+Originally I planed to save the tracks to the [GPS track hosting app][4]. But there is no functionality to update unfinished tracks.
+
+The recorder is recording everything published under the mqtt topic `ch/5th/ritt/#`.
+
+Optional query parameters:
+ - `trackee=joe`, if omitted the `default` track is outputed.
+
+[link][3]
 
 [0]: https://github.com/richtr/NoSleep.js/
+[1]: https://ritt.5th.ch/
+[2]: https://ritt.5th.ch/trackee.html
+[3]: https://knave.ritt.5th.ch/
+[4]: https://github.com/koma5/bH5
 
