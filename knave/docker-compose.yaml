@@ -5,6 +5,7 @@ services:
     restart: always
 
   influx_knave:
+    restart: always
     image: influxdb
 
   knave_out:
