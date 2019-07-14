@@ -146,6 +146,12 @@
         previousLineRequest.open("GET", previousTrackUrl, true);
         previousLineRequest.send();
     }
+    else {
+        var trackee = urlParams.get('trackee');
+        trackee = trackee !== null ? '?trackee=' + trackee : '';
+        previousLineRequest.open("GET", 'https://knave.ritt.5th.ch/' + trackee , true);
+        previousLineRequest.send();
+    }
 
 
     // add message callback and add new coordinates aswell as remove old
