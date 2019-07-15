@@ -27,7 +27,7 @@ The UI contains two buttons to turn on and off the tracking and the preventing o
 After the tracking has started to UI display the link to the frontend, the viewer with cocorrespondingrackee query parameter or without.
 
 opOptionaluery parameters:
- - `trackee=joe` if omitted the trackee published on trackee `default`.
+ - `?trackee=joe` if omitted the trackee published on trackee `default`.
 
 The trackee app is hosted [here][2].
 
@@ -39,7 +39,7 @@ Originally I planed to save the tracks to the [GPS track hosting app][4]. But th
 The component is recording everything published under the mqtt topic `ch/5th/ritt/#`.
 
 Optional query parameters:
- - `trackee=joe`, if omitted the `default` track is outputed.
+ - `?trackee=joe`, if omitted the `default` track is outputed.
 
 There is no need to navigate directly to [here][3] where knave is hosted because the frontend is trying to load the prevois track in the background.
 
