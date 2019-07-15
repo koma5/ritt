@@ -45,7 +45,7 @@ There is no need to navigate directly to [here][3] where knave is hosted because
 
 [0]: https://github.com/richtr/NoSleep.js/
 [1]: https://ritt.5th.ch/
-[2]: https://ritt.5th.ch/trackee.html
+[2]: https://ritt.5th.ch/trackee/
 [3]: https://knave.ritt.5th.ch/
 [4]: https://github.com/koma5/bH5
 
