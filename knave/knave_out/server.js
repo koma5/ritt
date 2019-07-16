@@ -16,6 +16,7 @@ app.get('/', function(req, res) {
 
 app.listen(4432);
 console.log('Express started on port 4432');
+var lastPoint = null;
 
 function getGeojson(topic, callback) {
     client.query('mqtt_consumer')
@@ -24,20 +25,47 @@ function getGeojson(topic, callback) {
 
             var geo = {
                 'type': 'FeatureCollection',
-                'features': [{
-                    'type': 'Feature',
-                    'properties': {},
-                    'geometry': {
-                        'type': 'LineString',
-                        'coordinates': []
-                    }
-                }]
+                'features': []
             }
-            if (data.results[0].series)
-            data.results[0].series[0].values.forEach(function(row){
-                point = row[3].split(',').map(parseFloat);
-                geo.features[0].geometry.coordinates.push([point[1], point[0]])
-            })
+
+            var emptySegment = {
+                'type': 'Feature',
+                'properties': {},
+                'geometry': {
+                    'type': 'LineString',
+                    'coordinates': []
+                }
+            }
+
+            if (data.results[0].series) {
+                var newSegment = JSON.parse(JSON.stringify(emptySegment))
+
+                data.results[0].series[0].values.forEach(function(row){
+
+                    console.log(row)
+                    //check if its not the first point and if far apart
+                    if(lastPoint && (new Date(row[0]).getTime() - lastPoint.getTime())/1000 > 900) {
+                        geo.features.push(newSegment);
+
+                        newSegment = JSON.parse(JSON.stringify(emptySegment))
+                        point = row[3].split(',').map(parseFloat);
+                        newSegment.geometry.coordinates.push([point[1], point[0]])
+
+                    }
+                    // all else means still same segment
+                    //check if first point
+                    else {
+                        point = row[3].split(',').map(parseFloat);
+                        newSegment.geometry.coordinates.push([point[1], point[0]])
+                    }
+                    lastPoint = new Date(row[0])
+                })
+                geo.features.push(newSegment);
+            }
+            else {
+                geo.features = emptySegment;
+            }
+
             callback(geo);
         })
         .catch(console.error);
